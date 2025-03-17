@@ -18,6 +18,9 @@
         "react-dom": "^18.2.0",
         "react-scripts": "5.0.1"
     },
+    "engines": {
+        "node": ">=18.x"
+    },
     "eslintConfig": {
         "extends": ["react-app"]
     },
