@@ -1,0 +1,136 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.section {
+    margin: 20px 0;
+}
+
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    .bracket-container {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        width: 100vw;
+        height: 80vh;
+        padding: 10px;
+    }
+    .round {
+        min-width: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        margin: 5px;
+    }
+    .game {
+        min-height: 100px;
+        padding: 10px;
+        margin: 5px 0;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+    .game button {
+        padding: 8px;
+        font-size: 12px;
+        min-width: 48px;
+    }
+    .banner {
+        width: 100%;
+        max-height: 150px;
+        object-fit: cover;
+    }
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 900px;
+        height: 80vh;
+        object-fit: cover;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+@media (min-width: 601px) {
+    .bracket-container {
+        display: flex;
+        flex-direction: row;
+        max-width: 1200px;
+        margin: 0 auto;
+        height: 80vh;
+        padding: 20px;
+    }
+    .round {
+        min-width: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        margin: 10px;
+    }
+    .game {
+        min-height: 120px;
+        padding: 15px;
+        margin: 10px 0;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+    .game button {
+        padding: 10px;
+        font-size: 14px;
+    }
+    .banner {
+        width: 100%;
+        max-width: 1200px;
+        max-height: 200px;
+        object-fit: cover;
+        margin: 0 auto;
+    }
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1200px;
+        height: 80vh;
+        object-fit: cover;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: 20px auto;
+}
+
+form input, form button, form select {
+    margin: 5px 0;
+    padding: 10px;
+}
+
+.leaderboard table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leaderboard th, .leaderboard td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.leaderboard th {
+    background-color: #f2f2f2;
+}
