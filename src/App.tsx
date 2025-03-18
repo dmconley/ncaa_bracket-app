@@ -3,30 +3,15 @@ import axios from 'axios';
 import './styles.css';
 
 function App() {
-    const [user, setUser] = useState(null);
-    const [section, setSection] = useState('login');
-    const [bracket, setBracket] = useState([]);
-    const [leaderboard, setLeaderboard] = useState([]);
-    const [graphics, setGraphics] = useState({});
+    const [user, setUser] = useState<{ user_id: number; is_admin: boolean } | null>(null);
+    const [section, setSection] = useState<string>('login');
+    const [bracket, setBracket] = useState<any[]>([]); // Update this type later
+    const [leaderboard, setLeaderboard] = useState<any[]>([]); // Update this type later
+    const [graphics, setGraphics] = useState<Record<string, string>>({});
 
-    const showSection = (sectionId) => setSection(sectionId);
+    const showSection = (sectionId: string) => setSection(sectionId);
 
-    const login = async (e) => {
-        e.preventDefault();
-        const username = e.target[0].value;
-        const password = e.target[1].value;
-        try {
-            const res = await axios.post('/api/auth', { action: 'login', username, password });
-            setUser(res.data);
-            showSection('bracket');
-            loadBracket();
-            loadGraphics();
-        } catch (err) {
-            alert(err.response?.data?.error || 'Login failed');
-        }
-    };
-
-    const register = async (e) => {
+    const login = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const username = e.target[0].value;
         const email = e.target[1].value;
