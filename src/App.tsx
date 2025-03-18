@@ -5,24 +5,39 @@ import './styles.css';
 function App() {
     const [user, setUser] = useState<{ user_id: number; is_admin: boolean } | null>(null);
     const [section, setSection] = useState<string>('login');
-    const [bracket, setBracket] = useState<any[]>([]); // Update this type later
-    const [leaderboard, setLeaderboard] = useState<any[]>([]); // Update this type later
+    const [bracket, setBracket] = useState<any[]>([]); // TODO: Replace with specific type
+    const [leaderboard, setLeaderboard] = useState<any[]>([]); // TODO: Replace with specific type
     const [graphics, setGraphics] = useState<Record<string, string>>({});
 
     const showSection = (sectionId: string) => setSection(sectionId);
 
     const login = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const username = e.target[0].value;
-        const email = e.target[1].value;
-        const password = e.target[2].value;
+        const username = (e.currentTarget[0] as HTMLInputElement).value;
+        const password = (e.currentTarget[1] as HTMLInputElement).value;
+        try {
+            const res = await axios.post('/api/auth', { action: 'login', username, password });
+            setUser(res.data);
+            showSection('bracket');
+            loadBracket();
+            loadGraphics();
+        } catch (err: any) {
+            alert(err.response?.data?.error || 'Login failed');
+        }
+    };
+
+    const register = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const username = (e.currentTarget[0] as HTMLInputElement).value;
+        const email = (e.currentTarget[1] as HTMLInputElement).value;
+        const password = (e.currentTarget[2] as HTMLInputElement).value;
         try {
             const res = await axios.post('/api/auth', { action: 'register', username, email, password });
             setUser(res.data);
             showSection('bracket');
             loadBracket();
             loadGraphics();
-        } catch (err) {
+        } catch (err: any) {
             alert(err.response?.data?.error || 'Registration failed');
         }
     };
@@ -33,7 +48,7 @@ function App() {
         setBracket(res.data);
     };
 
-    const saveSelection = async (gameId, selectedSlot) => {
+    const saveSelection = async (gameId: number, selectedSlot: string) => {
         if (!user) return;
         await axios.post('/api/bracket', { user_id: user.user_id, game_id: gameId, selected_slot: selectedSlot });
         loadBracket();
@@ -49,18 +64,18 @@ function App() {
         setGraphics(res.data);
     };
 
-    const handleAdminSubmit = async (e, action) => {
+    const handleAdminSubmit = async (e: React.FormEvent<HTMLFormElement>, action: string) => {
         e.preventDefault();
         if (!user?.is_admin) return alert('Unauthorized');
-        const formData = new FormData(e.target);
-        formData.append('user_id', user.user_id);
+        const formData = new FormData(e.currentTarget);
+        formData.append('user_id', user.user_id.toString());
         formData.append('action', action);
         try {
             const res = await axios.post('/api/admin', formData);
             alert(res.data.message);
             if (action === 'upload_seeding') loadBracket();
             if (action === 'upload_graphic') loadGraphics();
-        } catch (err) {
+        } catch (err: any) {
             alert(err.response?.data?.error || 'Admin action failed');
         }
     };
@@ -74,8 +89,8 @@ function App() {
             {graphics.banner && <img src={graphics.banner} alt="Banner" className="banner" />}
             <h2>Your Bracket</h2>
             <p>
-                <a href="#" onClick={() => showSection('leaderboard')}>Leaderboard</a> | 
-                {user?.is_admin && <a href="#" onClick={() => showSection('admin')}>Admin</a>}
+                <button className="link" onClick={() => showSection('leaderboard')}>Leaderboard</button> | 
+                {user?.is_admin && <button className="link" onClick={() => showSection('admin')}>Admin</button>}
             </p>
             <div className="bracket-container">
                 {[...Array(6)].map((_, round) => (
@@ -117,7 +132,7 @@ function App() {
                         <input type="password" placeholder="Password" required />
                         <button type="submit">Login</button>
                     </form>
-                    <p>Don't have an account? <a href="#" onClick={() => showSection('register')}>Register</a></p>
+                    <p>Don't have an account? <button className="link" onClick={() => showSection('register')}>Register</button></p>
                 </div>
             )}
             {section === 'register' && (
@@ -129,14 +144,14 @@ function App() {
                         <input type="password" placeholder="Password" required />
                         <button type="submit">Register</button>
                     </form>
-                    <p>Already have an account? <a href="#" onClick={() => showSection('login')}>Login</a></p>
+                    <p>Already have an account? <button className="link" onClick={() => showSection('login')}>Login</button></p>
                 </div>
             )}
             {section === 'bracket' && renderBracket()}
             {section === 'leaderboard' && (
                 <div className="section">
                     <h2>Leaderboard</h2>
-                    <p><a href="#" onClick={() => showSection('bracket')}>Back to Bracket</a></p>
+                    <p><button className="link" onClick={() => showSection('bracket')}>Back to Bracket</button></p>
                     <div className="leaderboard">
                         <table>
                             <thead>
@@ -162,7 +177,7 @@ function App() {
             {section === 'admin' && user?.is_admin && (
                 <div className="section">
                     <h2>Admin Panel</h2>
-                    <p><a href="#" onClick={() => showSection('bracket')}>Back to Bracket</a></p>
+                    <p><button className="link" onClick={() => showSection('bracket')}>Back to Bracket</button></p>
                     <h3>Upload Seeding (CSV: team_name,seed)</h3>
                     <form onSubmit={(e) => handleAdminSubmit(e, 'upload_seeding')}>
                         <input type="file" name="file" accept=".csv" required />
